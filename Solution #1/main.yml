@@ -1,7 +1,0 @@
-- hosts: all
-  tasks:
-  - debug:
-      msg: "Fact is {{ ansible_os_family }}"
-
-  - name: Include a play after another play
-    include: "{{ ansible_os_family }}.yml"

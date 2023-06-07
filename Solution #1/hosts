@@ -1,5 +1,0 @@
-[centos]
-VM1                 ansible_host=165.227.84.213
-
-[ubuntu]
-Ununtu                 ansible_host=165.22.9.6

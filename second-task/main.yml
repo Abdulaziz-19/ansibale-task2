@@ -1,0 +1,55 @@
+- hosts: all
+  tasks:
+    - debug:
+        msg: "Variable is {{ ansible_os_family }}"
+
+    - name: Install Apache on CentOS
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+      - httpd
+      - unzip
+      - wget
+      when: ansible_os_family == "RedHat"
+
+    - name: Make sure a service is running
+      systemd:
+        state: started
+        enabled: yes
+        name: httpd
+      when: ansible_os_family == "RedHat"
+
+    - name: Install apache httpd on Ubuntu  (state=present is optional)
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+      - apache2
+      - unzip
+      - wget
+      when: ansible_os_family == "Debian"
+
+    - name: Start Apache
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_os_family == "Debian"
+    
+    - name: Download template from free-css.com
+      get_url:
+        url: https://www.free-css.com/assets/files/free-css-templates/download/page291/carserv.zip
+        dest: /var/www/html/carserv.zip
+
+    - name: Unzip the downloaded file
+      unarchive:
+        src: /var/www/html/carserv.zip
+        dest: /var/www/html/
+        remote_src: yes
+        extra_opts: '-o'
+
+    - name: Move files to /var/www/html
+      shell: mv /var/www/html/car-repair-html-template/* /var/www/html/
+      args:
+        chdir: /var/www/html
